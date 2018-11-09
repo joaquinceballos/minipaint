@@ -149,6 +149,7 @@ function calculaMedidasImagen(){
 */
 function cargaImagenFondo() {
 	if (img !== undefined && img !== null) {
+		background(colorFondo);
 		calculaMedidasImagen();
         tint(255, 128);
 		image(img, xImg, yImg, anchoImg, altoImg);
