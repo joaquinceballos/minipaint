@@ -79,7 +79,6 @@ function redimensionarCanvas(){
 }
 
 function reDibujarCurvas(){
-	background(colorFondo);
 	let i, j, x0, y0, x1, y1;
 	for(i = 0; i < curvas.length; i++) {
 		for(j = 1; j < curvas[i].puntos.length; j++) {
@@ -112,13 +111,7 @@ function draw() {
         })
     }
     if (imgCargada && !imgPintada) {
-		background(colorFondo);
-        imgPintada = true;
-		calculaMedidasImagen();
-        tint(255, 128);
-        image(img, xImg, yImg, anchoImg, altoImg);
-        filter(GRAY);
-		tint(255);
+		pintarImagen();
     }
 }
 
@@ -140,6 +133,16 @@ function calculaMedidasImagen(){
     }	
 }
 
+function pintarImagen() {
+	background(colorFondo);
+	calculaMedidasImagen();
+    tint(255, 128);
+	image(img, xImg, yImg, anchoImg, altoImg);
+    filter(GRAY);
+	tint(255);
+    imgPintada = true;
+}
+
 /**
 	De momento carga siempre la misma imagen.
 	mirar cargar iamgen con el formulario de html5 para que el usuario pueda poner la imagen que quiera
@@ -149,11 +152,7 @@ function calculaMedidasImagen(){
 */
 function cargaImagenFondo() {
 	if (img !== undefined && img !== null) {
-		background(colorFondo);
-		calculaMedidasImagen();
-        tint(255, 128);
-		image(img, xImg, yImg, anchoImg, altoImg);
-		tint(255);
+		pintarImagen();
 	} else {
 		imgCargada = false;
 		imgPintada = false;
