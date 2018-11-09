@@ -23,7 +23,7 @@ let img;
 let url = "http://ritchie.euitio.uniovi.es/~UO250687/escuela.jpg";
 
 // url del servicio rest donde se envían los dibujos terminados
-let urlRest = "http://plotter.ddns.net:82/dibujo/0/imprimir";
+let urlRest = "http://plotter.ddns.net:82/dibujo/imprimir";
 
 // medidas del canvas
 let ancho, alto;
@@ -32,115 +32,118 @@ let ancho, alto;
 let anchoImg, altoImg, xImg, yImg;
 
 function setup() {
-    negro = color(0);
-    blanco = color(255);
-    colorFondo = color(240);
+	negro = color(0);
+	blanco = color(255);
+	colorFondo = color(240);
 
-    estableceMedidasCanvas();
+	estableceMedidasCanvas();
 
-    canvas = createCanvas(ancho, alto);
-    canvas.parent("div_canvas");
+	canvas = createCanvas(ancho, alto);
+	canvas.parent("div_canvas");
 
-    anteriorX = mouseX;
-    anteriorY = mouseY;
-    grosorLinea = 5;
+	anteriorX = mouseX;
+	anteriorY = mouseY;
+	grosorLinea = 5;
 
-    stroke(color(0));
-    background(colorFondo);
+	stroke(color(0));
+	background(colorFondo);
 
 }
 
 function windowResized() {
-    estableceMedidasCanvas();
+	estableceMedidasCanvas();
 	redimensionarCanvas();
 }
 
 function estableceMedidasCanvas() {
 	let i = 800;
-    if (vertical) {
+	if (vertical) {
 		do {
 			ancho = min(i, windowWidth * 0.80);
-			alto = ancho * pow(2, 0.5);			
+			alto = ancho * pow(2, 0.5);
 			i -= 10;
-		} while(ancho > windowWidth * 0.80 || alto > windowHeight * 0.80 );
-    } else {
-		do{			
+		} while (ancho > windowWidth * 0.80 || alto > windowHeight * 0.80);
+	} else {
+		do {
 			alto = min(i, windowHeight * 0.80);
 			ancho = alto * pow(2, 0.5);
 			i -= 10;
-		} while(ancho > windowWidth * 0.80  || alto > windowHeight * 0.80 );
-    }
+		} while (ancho > windowWidth * 0.80 || alto > windowHeight * 0.80);
+	}
 }
 
-function redimensionarCanvas(){
-    resizeCanvas(ancho, alto);	
+function redimensionarCanvas() {
+	resizeCanvas(ancho, alto);
 	repintarFondo();
 	reDibujarCurvas();
 }
 
-function reDibujarCurvas(){
+function reDibujarCurvas() {
 	let i, j, x0, y0, x1, y1;
-	for(i = 0; i < curvas.length; i++) {
-		for(j = 1; j < curvas[i].puntos.length; j++) {
+	for (i = 0; i < curvas.length; i++) {
+		// hay curvas que sólo tienen un punto...
+		if(curvas[i].puntos.length == 1){			
+			x0 = curvas[i].puntos[0].x * width;
+			y0 = curvas[i].puntos[0].y * height;
+			line(x0, y0, x0, y0);
+		}
+		for (j = 1; j < curvas[i].puntos.length; j++) {
 			x0 = curvas[i].puntos[j - 1].x * width;
 			y0 = curvas[i].puntos[j - 1].y * height;
 			x1 = curvas[i].puntos[j].x * width;
 			y1 = curvas[i].puntos[j].y * height;
-			line (x0, y0, x1, y1);
-		}		
+			line(x0, y0, x1, y1);
+		}
 	}
-
 }
 
 function girarOrientacion() {
-    vertical = !vertical;
+	vertical = !vertical;
 	curvas = []; // se pierde todo el dibujo
-    estableceMedidasCanvas();
+	estableceMedidasCanvas();
 	redimensionarCanvas();
 }
 
 function draw() {
-    if (imgSolicitada && !imgCargada) {
-        imgSolicitada = false;
-        console.log('start loading');
-        loadImage(url, function(i) {
-            imgCargada = true;
-            img = i;
-        }, function(e) {
-            console.log(e);
-        })
-    }
-    if (imgCargada && !imgPintada) {
+	if (imgSolicitada && !imgCargada) {
+		imgSolicitada = false;
+		console.log('start loading');
+		loadImage(url, function (i) {
+			imgCargada = true;
+			img = i;
+		}, function (e) {
+			console.log(e);
+		})
+	}
+	if (imgCargada && !imgPintada) {
 		pintarImagen();
-    }
+	}
 }
 
-function calculaMedidasImagen(){
-	
+function calculaMedidasImagen() {
 	let alAncho = 1.0 * width / img.width;
-    let alAlto = 1.0 * height / img.height;
-
-    if (alAlto < alAncho) {
-        anchoImg = img.width * alAlto;
-        altoImg = img.height * alAlto;
-        xImg = width / 2 - anchoImg / 2;
-        yImg = 0;
-    } else {
-        anchoImg = img.width * alAncho;
-        altoImg = img.height * alAncho;
-        xImg = 0;
-        yImg = height / 2 - altoImg / 2;
-    }	
+	let alAlto = 1.0 * height / img.height;
+	if (alAlto < alAncho) {
+		anchoImg = img.width * alAlto;
+		altoImg = img.height * alAlto;
+		xImg = width / 2 - anchoImg / 2;
+		yImg = 0;
+	} else {
+		anchoImg = img.width * alAncho;
+		altoImg = img.height * alAncho;
+		xImg = 0;
+		yImg = height / 2 - altoImg / 2;
+	}
 }
 
 function pintarImagen() {
 	background(colorFondo);
 	calculaMedidasImagen();
-    tint(255, 128);
+	tint(255, 128);
 	image(img, xImg, yImg, anchoImg, altoImg);
-    filter(GRAY);
+	filter(GRAY);
 	tint(255);
-    imgPintada = true;
+	imgPintada = true;
 }
 
 /**
@@ -160,11 +163,11 @@ function cargaImagenFondo() {
 	}
 }
 
-function repintarFondo(){
-    background(colorFondo);
-    if (imgPintada) {
-        cargaImagenFondo();
-    }	
+function repintarFondo() {
+	background(colorFondo);
+	if (imgPintada) {
+		cargaImagenFondo();
+	}
 }
 
 function limpiar() {
@@ -173,70 +176,67 @@ function limpiar() {
 }
 
 function enviar() {
-	httpPost(urlRest, 'json', curvas, function(result){
+	httpPost(urlRest, 'json', curvas, function (result) {
 		console.log("parece que todo fue bien");
 		console.log(result);
-	}, function(error){
+	}, function (error) {
 		console.log("parece que hubo un error");
 		console.log(error);
 	});
 }
 
 function touchStarted() {
-    anteriorX = mouseX;
-    anteriorY = mouseY;
+	anteriorX = mouseX;
+	anteriorY = mouseY;
 }
 
 function pintaLinea() {
-    anyadePunto();
-    strokeWeight(grosorLinea);
-    line(anteriorX, anteriorY, mouseX, mouseY);
-    anteriorX = mouseX;
-    anteriorY = mouseY;
+	anyadePunto();
+	strokeWeight(grosorLinea);
+	line(anteriorX, anteriorY, mouseX, mouseY);
+	anteriorX = mouseX;
+	anteriorY = mouseY;
 }
 
 function touchMoved() {
-    pintaLinea();
-    return mouseX <= 0 || mouseY <= 0 || mouseX >= width || mouseY >= height; /* return false cuando no se clicka en el canvas para evitar el scroll o reload en los móviles */
+	pintaLinea();
+	return mouseX <= 0 || mouseY <= 0 || mouseX >= width || mouseY >= height; /* return false cuando no se clicka en el canvas para evitar el scroll o reload en los móviles */
 }
 
 function touchEnded() {
-    pintaLinea();
-    anyadeCurva();
+	pintaLinea();
+	anyadeCurva();
 }
 
 function anyadeCurva() {
-    if (typeof puntos !== "undefined" && puntos != null && puntos.length != null && puntos.length > 0) {
-        curvas.push(new Curva(puntos, n));
-        puntos = [];
-        n++;
-    }
+	if (typeof puntos !== "undefined" && puntos != null && puntos.length != null && puntos.length > 0) {
+		curvas.push(new Curva(puntos, n));
+		puntos = [];
+		n++;
+	}
 }
 
 function anyadePunto(cursor) {
-	// en vez de guardar el punto, hay que guardar el porcentaje
-    let punto = new Punto(mouseX / width, mouseY / height);
-    if (mouseX >= 0 && mouseY >= 0 && mouseX <= width && mouseY <= height &&
-        (
-            typeof puntos !== "undefined" &&
-            puntos != null &&
-            puntos.length != null &&
-            puntos.length <= 0
-			||
-            !(puntos[puntos.length - 1].x === punto.x &&
-                puntos[puntos.length - 1].y === punto.y)
-		)
-    ) {
-        puntos.push(punto);
-    }
+	let punto = new Punto(mouseX / width, mouseY / height);
+	if (mouseX >= 0 && mouseY >= 0 && mouseX <= width && mouseY <= height &&
+		(
+			typeof puntos !== "undefined" &&
+			puntos != null &&
+			puntos.length != null &&
+			puntos.length <= 0 ||
+			!(puntos[puntos.length - 1].x === punto.x &&
+				puntos[puntos.length - 1].y === punto.y)
+		)) {
+		puntos.push(punto);
+	}
 }
 
 function Curva(puntos, n) {
-    this.n = n;
-    this.puntos = [].concat(puntos);
+	this.n = n;
+	this.puntos = [].concat(puntos);
 }
 
 function Punto(x, y) {
-    this.x = x;
-    this.y = y;
+	this.x = x;
+	this.y = y;
 }
