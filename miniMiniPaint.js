@@ -28,6 +28,9 @@ let urlRest = "http://plotter.ddns.net:82/dibujo/0/imprimir";
 // medidas del canvas
 let ancho, alto;
 
+// medidas de la imagen
+let anchoImg, altoImg, xImg, yImg;
+
 function setup() {
     negro = color(0);
     blanco = color(255);
@@ -116,8 +119,6 @@ function draw() {
         let alAncho = 1.0 * width / img.width;
         let alAlto = 1.0 * height / img.height;
 
-        let anchoImg, altoImg, xImg, yImg;
-
         if (alAlto < alAncho) {
             anchoImg = img.width * alAlto;
             altoImg = img.height * alAlto;
@@ -143,9 +144,13 @@ function draw() {
 	pendiente ajustar al lienzo
 */
 function cargaImagenFondo() {
-    imgCargada = false;
-    imgPintada = false;
-    imgSolicitada = true;
+	if (img !== undefined && img !== null){
+		image(img, xImg, yImg, anchoImg, altoImg);
+	} else {
+		imgCargada = false;
+		imgPintada = false;
+		imgSolicitada = true;
+	}
 }
 
 function repintarFondo(){
