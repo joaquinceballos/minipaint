@@ -71,11 +71,11 @@ function estableceMedidasCanvas() {
 
 function redimensionarCanvas(){
     resizeCanvas(ancho, alto);	
-	limpiar();
 	reDibujarCurvas();
 }
 
 function reDibujarCurvas(){
+	background(colorFondo);
 	let i, j, x0, y0, x1, y1;
 	for(i = 0; i < curvas.length; i++) {
 		for(j = 1; j < curvas[i].puntos.length; j++) {
@@ -149,6 +149,7 @@ function cargaImagenFondo() {
 }
 
 function limpiar() {
+	curvas = [];
     background(colorFondo);
     if (imgPintada) {
         cargaImagenFondo();
