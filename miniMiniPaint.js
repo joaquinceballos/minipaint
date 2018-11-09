@@ -71,6 +71,7 @@ function estableceMedidasCanvas() {
 
 function redimensionarCanvas(){
     resizeCanvas(ancho, alto);	
+	repintarFondo();
 	reDibujarCurvas();
 }
 
@@ -147,12 +148,16 @@ function cargaImagenFondo() {
     imgSolicitada = true;
 }
 
-function limpiar() {
-	curvas = [];
+function repintarFondo(){
     background(colorFondo);
     if (imgPintada) {
         cargaImagenFondo();
-    }
+    }	
+}
+
+function limpiar() {
+	curvas = [];
+	repintarFondo();
 }
 
 function enviar() {
