@@ -114,26 +114,30 @@ function draw() {
     if (imgCargada && !imgPintada) {
 		background(colorFondo);
         imgPintada = true;
+		calculaMedidasImagen();
         tint(255, 128);
-
-        let alAncho = 1.0 * width / img.width;
-        let alAlto = 1.0 * height / img.height;
-
-        if (alAlto < alAncho) {
-            anchoImg = img.width * alAlto;
-            altoImg = img.height * alAlto;
-            xImg = width / 2 - anchoImg / 2;
-            yImg = 0;
-        } else {
-            anchoImg = img.width * alAncho;
-            altoImg = img.height * alAncho;
-            xImg = 0;
-            yImg = height / 2 - altoImg / 2;
-        }
-
         image(img, xImg, yImg, anchoImg, altoImg);
         filter(GRAY);
+		tint(255);
     }
+}
+
+function calculaMedidasImagen(){
+	
+	let alAncho = 1.0 * width / img.width;
+    let alAlto = 1.0 * height / img.height;
+
+    if (alAlto < alAncho) {
+        anchoImg = img.width * alAlto;
+        altoImg = img.height * alAlto;
+        xImg = width / 2 - anchoImg / 2;
+        yImg = 0;
+    } else {
+        anchoImg = img.width * alAncho;
+        altoImg = img.height * alAncho;
+        xImg = 0;
+        yImg = height / 2 - altoImg / 2;
+    }	
 }
 
 /**
@@ -144,8 +148,11 @@ function draw() {
 	pendiente ajustar al lienzo
 */
 function cargaImagenFondo() {
-	if (img !== undefined && img !== null){
+	if (img !== undefined && img !== null) {
+		calculaMedidasImagen();
+        tint(255, 128);
 		image(img, xImg, yImg, anchoImg, altoImg);
+		tint(255);
 	} else {
 		imgCargada = false;
 		imgPintada = false;
