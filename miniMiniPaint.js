@@ -142,7 +142,6 @@ function draw() {
 	pendiente ajustar al lienzo
 */
 function cargaImagenFondo() {
-    console.log("alguien ha llamado a cargaImagen");
     imgCargada = false;
     imgPintada = false;
     imgSolicitada = true;
@@ -157,7 +156,6 @@ function limpiar() {
 }
 
 function enviar() {
-	console.log("alguien ha llamado a enviar");
 	httpPost(urlRest, 'json', curvas, function(result){
 		console.log("parece que todo fue bien");
 		console.log(result);
@@ -195,8 +193,6 @@ function anyadeCurva() {
         curvas.push(new Curva(puntos, n));
         puntos = [];
         n++;
-        console.log("Se ha añadido una curva");
-        console.log(curvas);
     }
 }
 
@@ -215,7 +211,6 @@ function anyadePunto(cursor) {
 		)
     ) {
         puntos.push(punto);
-        //console.log("Se ha añadido un punto");
     }
 }
 
