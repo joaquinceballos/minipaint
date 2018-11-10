@@ -23,7 +23,7 @@ let img;
 let url = "http://ritchie.euitio.uniovi.es/~UO250687/escuela.jpg";
 
 // url del servicio rest donde se envían los dibujos terminados
-let urlRest = "http://plotter.ddns.net:82/dibujo/imprimir";
+let urlRest = "http://plotter.ddns.net:82/dibujo/enviar";
 
 // medidas del canvas
 let ancho, alto;
