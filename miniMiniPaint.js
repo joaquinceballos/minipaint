@@ -177,7 +177,8 @@ function limpiar() {
 
 function enviar() {
 	httpPost(urlRest, 'json', curvas, function (result) {
-		console.log("parece que todo fue bien");
+		img = null;
+		limpiar();
 		console.log(result);
 	}, function (error) {
 		console.log("parece que hubo un error");
