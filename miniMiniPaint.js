@@ -1,3 +1,6 @@
+// colores
+let negro, blanco, colorFondo;
+
 //guarda los puntos que se capturan desde que se empieza hasta que se termina el trazo 
 let puntos = [];
 
@@ -14,13 +17,10 @@ let canvas;
 let vertical = true;
 
 // para controlar la carga de las imágenes
-let imgCargada, imgPintada, imgSolicitada;
+let imgCargada, mostrarImg = false;
 
 // imagen de fondo
 let img;
-
-// url de la imagen de fondo a cargar
-let url = "http://ritchie.euitio.uniovi.es/~UO250687/escuela.jpg";
 
 // url del servicio rest donde se envían los dibujos terminados
 let urlRest = "http://plotter.ddns.net:82/dibujo/enviar";
@@ -31,23 +31,26 @@ let ancho, alto;
 // medidas de la imagen
 let anchoImg, altoImg, xImg, yImg;
 
+// control para que no pinte cuando se clicka derecho o centro
+let clickDerechoOCentro = false;
+
 function setup() {
 	negro = color(0);
 	blanco = color(255);
-	colorFondo = color(240);
-
+	colorFondo = color(245);
 	estableceMedidasCanvas();
-
 	canvas = createCanvas(ancho, alto);
 	canvas.parent("div_canvas");
-
 	anteriorX = mouseX;
 	anteriorY = mouseY;
-	grosorLinea = 5;
-
-	stroke(color(0));
+	grosorLinea = 3;
+	stroke(negro);
 	background(colorFondo);
+	noLoop();
+}
 
+function draw() {
+	// nada que poner aquí ...
 }
 
 function windowResized() {
@@ -104,22 +107,6 @@ function girarOrientacion() {
 	redimensionarCanvas();
 }
 
-function draw() {
-	if (imgSolicitada && !imgCargada) {
-		imgSolicitada = false;
-		console.log('start loading');
-		loadImage(url, function (i) {
-			imgCargada = true;
-			img = i;
-		}, function (e) {
-			console.log(e);
-		})
-	}
-	if (imgCargada && !imgPintada) {
-		pintarImagen();
-	}
-}
-
 function calculaMedidasImagen() {
 	let alAncho = 1.0 * width / img.width;
 	let alAlto = 1.0 * height / img.height;
@@ -143,30 +130,33 @@ function pintarImagen() {
 	image(img, xImg, yImg, anchoImg, altoImg);
 	filter(GRAY);
 	tint(255);
-	imgPintada = true;
 }
 
-/**
-	De momento carga siempre la misma imagen.
-	mirar cargar iamgen con el formulario de html5 para que el usuario pueda poner la imagen que quiera
-	alternativa: tener una serie de imágenes ya predefinidas para escoger
-	
-	pendiente ajustar al lienzo
-*/
-function cargaImagenFondo() {
-	if (img !== undefined && img !== null) {
-		pintarImagen();
-	} else {
-		imgCargada = false;
-		imgPintada = false;
-		imgSolicitada = true;
-	}
+function mostrarOcultarImagen() {
+	mostrarImg = !mostrarImg;
+	repintarFondo();
+	reDibujarCurvas();
+}
+
+function cargaImagen(input) {
+	var file = input.files[0];
+    var reader = new FileReader();
+	reader.onload = function (e) {
+		loadImage(e.target.result, function(imagen){
+			img = imagen;
+			imgCargada = true;
+			mostrarImg = true;
+			repintarFondo();
+			reDibujarCurvas();
+		});
+    }	
+    reader.readAsDataURL(file);
 }
 
 function repintarFondo() {
 	background(colorFondo);
-	if (imgPintada) {
-		cargaImagenFondo();
+	if (imgCargada && mostrarImg) {
+		pintarImagen();
 	}
 }
 
@@ -176,19 +166,19 @@ function limpiar() {
 }
 
 function enviar() {
-	httpPost(urlRest, 'json', curvas, function (result) {
+	console.log(JSON.stringify(curvas));
+	httpPost(urlRest + "?autor=pendiente&vertical=" + vertical, 'json', curvas, function (result) {
 		img = null;
+		imgCargada = false;
+		mostrarImg = false;
 		limpiar();
 		console.log(result);
+		// no mola nada ...
+		estadoControles();
 	}, function (error) {
-		console.log("parece que hubo un error");
+		console.log("Hubo un error al enviar el dibujo");
 		console.log(error);
 	});
-}
-
-function touchStarted() {
-	anteriorX = mouseX;
-	anteriorY = mouseY;
 }
 
 function pintaLinea() {
@@ -199,12 +189,28 @@ function pintaLinea() {
 	anteriorY = mouseY;
 }
 
+function touchStarted() {
+	if(mouseIsPressed && mouseButton === RIGHT || mouseButton === CENTER) {
+		clickDerechoOCentro = true;
+		return;
+	}
+	anteriorX = mouseX;
+	anteriorY = mouseY;
+}
+
 function touchMoved() {
+	if(clickDerechoOCentro) {
+		return;
+	}
 	pintaLinea();
 	return mouseX <= 0 || mouseY <= 0 || mouseX >= width || mouseY >= height; /* return false cuando no se clicka en el canvas para evitar el scroll o reload en los móviles */
 }
 
-function touchEnded() {
+function touchEnded() {	
+	if(clickDerechoOCentro) {
+		clickDerechoOCentro = false;
+		return;
+	}
 	pintaLinea();
 	anyadeCurva();
 }
@@ -215,6 +221,8 @@ function anyadeCurva() {
 		puntos = [];
 		n++;
 	}
+	// esto no mola pero ...
+	estadoControles();
 }
 
 function anyadePunto(cursor) {
