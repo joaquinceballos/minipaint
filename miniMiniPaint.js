@@ -23,7 +23,7 @@ let imgCargada, mostrarImg = false;
 let img;
 
 // url del servicio rest donde se envían los dibujos terminados
-let urlRest = "http://plotter.ddns.net:82/dibujo/enviar";
+let urlRest = "http://plotter.ddns.net:8080/dibujo/enviar";
 
 // medidas del canvas
 let ancho, alto;
@@ -166,14 +166,17 @@ function limpiar() {
 }
 
 function enviar() {
-	console.log(JSON.stringify(curvas));
-	httpPost(urlRest + "?autor=pendiente&vertical=" + vertical, 'json', curvas, function (result) {
+	var dibujo = {		
+		autor : "pendiente",
+		vertical : vertical,
+		curvas : curvas		
+	};	
+	httpPost(urlRest, 'json', dibujo, function (result) {
 		img = null;
 		imgCargada = false;
 		mostrarImg = false;
 		limpiar();
 		console.log(result);
-		// no mola nada ...
 		estadoControles();
 	}, function (error) {
 		console.log("Hubo un error al enviar el dibujo");
@@ -194,6 +197,7 @@ function touchStarted() {
 		clickDerechoOCentro = true;
 		return;
 	}
+	anyadePunto();
 	anteriorX = mouseX;
 	anteriorY = mouseY;
 }
@@ -217,9 +221,8 @@ function touchEnded() {
 
 function anyadeCurva() {
 	if (typeof puntos !== "undefined" && puntos != null && puntos.length != null && puntos.length > 0) {
-		curvas.push(new Curva(puntos, n));
+		curvas.push(new Curva(puntos));
 		puntos = [];
-		n++;
 	}
 	// esto no mola pero ...
 	estadoControles();
@@ -229,19 +232,18 @@ function anyadePunto(cursor) {
 	let punto = new Punto(mouseX / width, mouseY / height);
 	if (mouseX >= 0 && mouseY >= 0 && mouseX <= width && mouseY <= height &&
 		(
-			typeof puntos !== "undefined" &&
-			puntos != null &&
-			puntos.length != null &&
-			puntos.length <= 0 ||
-			!(puntos[puntos.length - 1].x === punto.x &&
-				puntos[puntos.length - 1].y === punto.y)
+			typeof puntos !== "undefined"
+			&& puntos != null
+			&& puntos.length != null
+			&& puntos.length <= 0
+			|| !(puntos[puntos.length - 1].x === punto.x 
+				&& puntos[puntos.length - 1].y === punto.y)
 		)) {
 		puntos.push(punto);
 	}
 }
 
-function Curva(puntos, n) {
-	this.n = n;
+function Curva(puntos) {
 	this.puntos = [].concat(puntos);
 }
 
