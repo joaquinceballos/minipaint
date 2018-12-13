@@ -34,21 +34,60 @@
       <section>
          <p/>
          <div class="mx-auto text-center">
+			<!-- controles del minipaint -->
             <button  id="subir" class="btn btn-secondary btn-lg">ocultar</button>
             <button  id="limpiar" class="btn btn-secondary btn-lg">Limpiar</button>
             <button  id="enviar" class="btn btn-secondary btn-lg">Enviar</button>
             <button  id="orientacion" class="btn btn-secondary btn-lg">horizontal</button>
             <!-- para darle estilo habrá que meter más elementos ... más adelante -->
             <input type="file" class="custom-file-input" id="inputImagen">
+			
+			<!-- controles del TSPArt -->
+			<!-- TODO -->
       </section>
       </div>
       <script>
+		/*
+			TODO para meter la parte del TSPArt:
+			
+			* Añadir un menú con las opciones del paint, tspart y ya de paso un "Acerca de" o algo similar
+			
+			* Usar la misma página para todo
+			
+			* Minipaint y TSPArt pueden usar el mismo canvas perfectamente y mismo sketch de p5.js
+			
+				- Implementar un método que oculte y muestre los botones necesarios:
+					Por ejemplo al pulsar en la opción del menú del TSPArt hay que ocultar los botones con id:
+						subir
+						limpiar
+						enviar
+						orientacion
+						inputImagen <--- este igual nos sirve para los dos propósitos
+						
+					Y mostrar los propios del TSPArt...
+				
+				- Añadir los controles del TSPArt, almenos serían:
+						Un slider para aplicar el filtro threshold
+						Un boton siguiente paso (tras finalizar el threshold)
+						Un botón de cancelar para restaurar la imagen original ?
+						Un boton enviar (podría ser el mismo que antes cambiando el texto del botón ... )
+						
+				- Añadir la lógica al sketch de p5.js
+						Aplicar el threshold con un map del slider
+						Borrar (Sólo cuando el estado de la imagen sea con filtro ya aplicado)
+						enviar (esto podía hacerse codificando la imagen y mandando el String, el problema es que a Processing no le puede llegar el String porque para descodificarlo a imagen es jodido)
+						
+						
+			
+		*/
+	  
 	     // controles
 		 var btnMostrarOcultar = document.getElementById('subir');
 		 var btnOrientacion = document.getElementById("orientacion");
 		 var btnLimpiar = document.getElementById("limpiar");
 		 var btnEnviar = document.getElementById("enviar");
 		 var inputImg = document.getElementById("inputImagen");
+		 
 		 btnMostrarOcultar.onclick = function(e){
 			mostrarOcultarImagen();
 			btnMostrarOcultar.innerHTML = mostrarImg ?  "ocultar" : "mostrar";
@@ -79,7 +118,7 @@
 		estadoControles = function() {
 			btnLimpiar.disabled = curvas.length == 0;
 			btnEnviar.disabled = curvas.length == 0;
-		}		
+		};
 		estadoControles();
          
       </script>

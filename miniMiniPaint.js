@@ -157,6 +157,7 @@ function repintarFondo() {
 	background(colorFondo);
 	if (imgCargada && mostrarImg) {
 		pintarImagen();
+		console.log(img.canvas.toDataURL());
 	}
 }
 
