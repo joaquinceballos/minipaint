@@ -1,6 +1,7 @@
  body {
 	padding: 0;
 	margin: 0;
+    background-color: #333;
  } 
  canvas {
 	padding-left: 0;
@@ -12,7 +13,7 @@
 	border: 1px solid black;
  }
 .btn-group button {
-  background-color: #4CAF50; /* Green background */
+  background-color:  #808080; /* Green background */
   border: 1px solid green; /* Green border */
   color: white; /* White text */
   padding: 10px 24px; /* Some padding */
@@ -33,7 +34,7 @@
 
 /* Add a background color on hover */
 .btn-group button:hover {
-  background-color: #3e8e41;
+  background-color:  #808080;
 }
 
 .slidecontainer {
@@ -68,13 +69,162 @@
   appearance: none;
   width: 25px; /* Set a specific slider handle width */
   height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
+  background:  #808080; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
 
 .slider::-moz-range-thumb {
   width: 25px; /* Set a specific slider handle width */
   height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
+  background:  #808080; /* Green background */
   cursor: pointer; /* Cursor on hover */
+}
+
+h1 {
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  font-size: 92px;
+  text-align: center;
+  text-transform: uppercase;
+  text-rendering: optimizeLegibility;
+    
+color: #e0dfdc;
+    background-color: #333;
+    letter-spacing: .1em;
+    text-shadow: 
+      0 -1px 0 #fff, 
+      0 1px 0 #2e2e2e, 
+      0 2px 0 #2c2c2c, 
+      0 3px 0 #2a2a2a, 
+      0 4px 0 #282828, 
+      0 5px 0 #262626, 
+      0 6px 0 #242424, 
+      0 7px 0 #222, 
+      0 8px 0 #202020, 
+      0 9px 0 #1e1e1e, 
+      0 10px 0 #1c1c1c, 
+      0 11px 0 #1a1a1a, 
+      0 12px 0 #181818, 
+      0 13px 0 #161616, 
+      0 14px 0 #141414, 
+      0 15px 0 #121212, 
+      0 22px 30px rgba(0, 0, 0, 0.9);
+  
+}
+h2 {
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  font-size: 40px;
+  text-align: center;
+  text-transform: uppercase;
+  text-rendering: optimizeLegibility;
+
+color: #e0dfdc;
+    background-color: #333;
+    letter-spacing: .1em;
+    text-shadow: 
+      0 -1px 0 #fff, 
+      0 1px 0 #2e2e2e, 
+      0 2px 0 #2c2c2c, 
+      0 3px 0 #2a2a2a, 
+      0 4px 0 #282828, 
+      0 5px 0 #262626, 
+      0 6px 0 #242424, 
+      0 7px 0 #222, 
+      0 8px 0 #202020, 
+      0 9px 0 #1e1e1e, 
+      0 10px 0 #1c1c1c, 
+      0 11px 0 #1a1a1a, 
+      0 12px 0 #181818, 
+      0 13px 0 #161616, 
+      0 14px 0 #141414, 
+      0 15px 0 #121212, 
+      0 22px 30px rgba(0, 0, 0, 0.9);
+  
+}
+
+h3 {
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  font-size: 15px;
+  padding: 50px 50px;
+  text-align: center;
+  text-transform: uppercase;
+  text-rendering: optimizeLegibility;
+    
+   color: #e0dfdc;
+    background-color: #333;
+    letter-spacing: .1em;
+
+    
+  
+}
+
+nav{
+  width: 100%;
+  top:50px;
+  text-align:center;
+}
+nav a{
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  font-weight:500;
+  color: #e0dfdc;
+  margin:30px 50px;
+  font-size:25px;
+  letter-spacing:1px;
+  position:relative;
+  display:inline-block;
+  padding : 20px;
+  border-style: solid;
+    text-decoration:none;
+}
+a:hover 
+{
+     color:#FFFFFF; 
+     text-decoration:none; 
+     cursor:pointer;  
+}
+nav a:before{
+  content:'';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: #e0dfdc;
+  top:47%;
+  animation:out 0.2s cubic-bezier(1, 0, 0.58, 0.97) 1 both;
+}
+nav a:hover:before{
+  animation:in 0.2s cubic-bezier(1, 0, 0.58, 0.97) 1 both;
+
+}
+@keyframes in{
+  0%{
+    width: 0;
+    left:0;
+    right:auto;
+  }
+  100%{
+    left:0;
+    right:auto;
+    width: 100%;
+  }
+}
+@keyframes out{
+  0%{
+    width:100%;
+    left: auto;
+    right: 0;
+  }
+  100%{
+    width: 0;
+    left: auto;
+    right: 0;
+  }
+}
+@keyframes show{
+  0%{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
