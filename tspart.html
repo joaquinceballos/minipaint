@@ -10,93 +10,94 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
       <script src="funcionesCanvas.js"></script>
-      <script src="tspart.js"></script>
-      <link rel="stylesheet" type="text/css" href="estilo.css">
+	  <script src="tspart.js"></script>
+	  <link rel="stylesheet" type="text/css" href="estilo.css">
    </head>
    <body>
-      <p/>
+   <p/>
       <div id="div_canvas">
       </div class="center-block">
       <section>
          <p/>
          <div class="mx-auto text-center">
-            <!-- controles del minipaint -->
+			<!-- controles del minipaint -->
             <button  id="enviar" class="btn btn-secondary btn-lg">Enviar</button>
             <button  id="orientacion" class="btn btn-secondary btn-lg">horizontal</button>
-            <div class="slidecontainer" id = "slider">
-               <p>Threshold</p>
-               <input type="range" min="1" max="100" value="50" class="slider" id = "sliderValue">
-            </div>
-            <div class="slidecontainer" id = "sliderGoma">
-               <p>Tamaño Goma</p>
-               <input type="range" min="1" max="100" value="50" class="slider" id = "sliderGomaValue">
-            </div>
-            <div class="slidecontainer">
-               <input type="file" class="center" id="inputImagen">
-            </div>
+            <!-- para darle estilo habrá que meter más elementos ... más adelante -->
+			<div class="slidecontainer" id = "slider">
+                <p>Threshold</p>
+                <input type="range" min="1" max="100" value="50" class="slider" id = "sliderValue">
+            </div> 
+			<div class="slidecontainer" id = "sliderGoma">
+                <p>Tamaño Goma</p>
+                <input type="range" min="1" max="100" value="50" class="slider" id = "sliderGomaValue">
+            </div> 
+			<div class="slidecontainer">
+            <input type="file" class="center" id="inputImagen">
+			</div>
       </section>
       </div>
       <script>	  
-         // controles
-         var btnOrientacion = document.getElementById("orientacion");
-         var btnEnviar = document.getElementById("enviar");
-         var inputImg = document.getElementById("inputImagen");
-         var slider = document.getElementById("sliderValue");
-         var sliderGoma = document.getElementById("sliderGomaValue");
-         var avisadoPaso3 = false;
-           
+	     // controles
+		 var btnOrientacion = document.getElementById("orientacion");
+		 var btnEnviar = document.getElementById("enviar");
+		 var inputImg = document.getElementById("inputImagen");
+		 var slider = document.getElementById("sliderValue");
+		 var sliderGoma = document.getElementById("sliderGomaValue");
+		 var avisadoPaso3 = false;
+		      
+		
+		$( "<div id='alertaID' class='slidecontainer alert alert-warning'>Carga una imagen</div>").insertAfter( "#div_canvas" );
+		$("#alertaID").delay(5000).fadeOut('slow');
+		 		 
+		 sliderGoma.oninput = function(){
+			grosorLinea = this.value;
+		 }
+		 
+		 slider.oninput = function() {
+		  aplicaThreshold(this.value);
+		}
+			 
+         btnOrientacion.onclick = function(){
+			girarOrientacion();
+			btnOrientacion.innerHTML = vertical ?  "horizontal" : "vertical";	
+			slider.value = "50";
+			thresholdAplicado = false;	
+			avisadoPaso3 = false;
+			estadoControles();			
+		}
+		
+         btnEnviar.onclick = function(){
+			enviar();
+			inputImg.value = null;
+		};
+		 inputImg.onchange = function (e) {
+			cargaImagen(e.srcElement);
+			slider.value = "50";
+			thresholdAplicado = false;	
+			avisadoPaso3 = false;
+			estadoControles();		
+			$( "<div id='imagenCargada' class='slidecontainer alert alert-info'>Aplica el filtro THRESHOLD a la imagen</div>").insertAfter( "#div_canvas" );
+			$("#imagenCargada").delay(5000).fadeOut('slow');
+		};
+
+		estadoControles = function() {
+		console.log(thresholdAplicado);
+			if(thresholdAplicado){
+			if(!avisadoPaso3){
+				avisadoPaso3 = true;			
+				$( "<div id='imagenCargada' class='slidecontainer alert alert-success'>Listo! puedes enviar la foto o retocarla con la goma de borrar</div>").insertAfter( "#div_canvas" );
+			$("#imagenCargada").delay(5000).fadeOut('slow');
+			}
+				sliderGoma.classList.remove("hidden");
+				btnEnviar.disabled = false;
+			} else {
+				sliderGoma.classList.add("hidden");
+				btnEnviar.disabled = true;
+			}
+		};
+		estadoControles();
          
-         $( "<div id='alertaID' class='slidecontainer alert alert-warning'>Carga una imagen</div>").insertAfter( "#div_canvas" );
-         $("#alertaID").delay(5000).fadeOut('slow');
-         
-         sliderGoma.oninput = function(){
-         grosorLinea = this.value;
-         }
-         
-         slider.oninput = function() {
-         aplicaThreshold(this.value);
-         }
-         
-            btnOrientacion.onclick = function(){
-         girarOrientacion();
-         btnOrientacion.innerHTML = vertical ?  "horizontal" : "vertical";	
-         slider.value = "50";
-         thresholdAplicado = false;	
-         avisadoPaso3 = false;
-         estadoControles();			
-         }
-         
-            btnEnviar.onclick = function(){
-         enviar();
-         inputImg.value = null;
-         };
-         inputImg.onchange = function (e) {
-         cargaImagen(e.srcElement);
-         slider.value = "50";
-         thresholdAplicado = false;	
-         avisadoPaso3 = false;
-         estadoControles();		
-         $( "<div id='imagenCargada' class='slidecontainer alert alert-info'>Aplica el filtro THRESHOLD a la imagen</div>").insertAfter( "#div_canvas" );
-         $("#imagenCargada").delay(5000).fadeOut('slow');
-         };
-         
-         estadoControles = function() {
-         console.log(thresholdAplicado);
-         if(thresholdAplicado){
-         if(!avisadoPaso3){
-         avisadoPaso3 = true;			
-         $( "<div id='imagenCargada' class='slidecontainer alert alert-success'>Listo! puedes enviar la foto o retocarla con la goma de borrar</div>").insertAfter( "#div_canvas" );
-         $("#imagenCargada").delay(5000).fadeOut('slow');
-         }
-         sliderGoma.classList.remove("hidden");
-         btnEnviar.disabled = false;
-         } else {
-         sliderGoma.classList.add("hidden");
-         btnEnviar.disabled = true;
-         }
-         };
-         estadoControles();
-            
       </script>
    </body>
 </html>
