@@ -47,7 +47,7 @@
 		 var avisadoPaso3 = false;
 		      
 		
-		$( "<div id='alertaID' class='slidecontainer alert alert-warning'>Carga una imagen</div>").insertAfter( "#div_canvas" );
+		$( "<div id='alertaID' class='slidecontainer alert alert-info'>Carga una imagen</div>").insertAfter( "#div_canvas" );
 		$("#alertaID").delay(5000).fadeOut('slow');
 		 		 
 		 sliderGoma.oninput = function(){
@@ -86,7 +86,7 @@
 			if(thresholdAplicado){
 			if(!avisadoPaso3){
 				avisadoPaso3 = true;			
-				$( "<div id='imagenCargada' class='slidecontainer alert alert-success'>Listo! puedes enviar la foto o retocarla con la goma de borrar</div>").insertAfter( "#div_canvas" );
+				$( "<div id='imagenCargada' class='slidecontainer alert alert-info'>Listo! puedes enviar la foto o retocarla con la goma de borrar</div>").insertAfter( "#div_canvas" );
 			$("#imagenCargada").delay(5000).fadeOut('slow');
 			}
 				sliderGoma.classList.remove("hidden");
