@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>p5.js example</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	  <script src="dibujos.js"></script>
+      <!--pasar a un .css -->
+      <style>  
+		 body {
+		 padding: 0;
+		 margin: 0;
+		 } 
+         canvas {
+         padding-left: 0;
+         padding-right: 0;
+         margin-left: auto;
+         margin-right: auto;
+         display: block;
+         width: 800px;
+    border: 1px solid black;
+         }
+      </style>
+   </head>
+   <body>
+      <h1 class="text-center">Proyecto Plóter</h1>
+      <h3 class="text-center">Informática Audiovisual 2018/19 · Universidad de Oviedo</h3>
+      <div id="div_canvas">
+      </div class="center-block">
+      <section>
+         <p/>
+         <div class="mx-auto text-center">
+			<!-- controles del minipaint -->
+            <button  id="subir" class="btn btn-secondary btn-lg">ocultar</button>
+            <button  id="limpiar" class="btn btn-secondary btn-lg">Limpiar</button>
+            <button  id="enviar" class="btn btn-secondary btn-lg">Enviar</button>
+            <button  id="orientacion" class="btn btn-secondary btn-lg">horizontal</button>
+            <!-- para darle estilo habrá que meter más elementos ... más adelante -->
+            <input type="file" class="custom-file-input" id="inputImagen">
+			
+			<!-- controles del TSPArt -->
+			<!-- TODO -->
+            <button  id="prueba" class="btn btn-secondary btn-lg">prueba</button>
+      </section>
+      </div>
+      <script>
+	  
+	  	  
+	  var btnPrueba = document.getElementById('prueba');
+	  
+	  btnPrueba.onclick = function(){
+	  
+	  saveFrames('out', 'png', 1, 1, function(data) {
+	  
+		loadImage(data[0].imageData, function(primerFrame){
+		
+		
+		var imagen = {		
+			base64 : primerFrame.canvas.toDataURL(),
+			vertical : vertical		
+		};	
+		
+		httpPost("http://plotter.ddns.net:8080/imagen/enviar", 'json', imagen, function (result) {
+			img = null;
+			imgCargada = false;
+			mostrarImg = false;
+			limpiar();
+			console.log(result);
+			estadoControles();
+		}, function (error) {
+			console.log("Hubo un error al enviar la imagen");
+			console.log(error);
+		});
+		
+		});
+	  
+	  
+
+		});
+	  
+
+	  };
+	  
+		/*
+			TODO para meter la parte del TSPArt:
+			
+			* Añadir un menú con las opciones del paint, tspart y ya de paso un "Acerca de" o algo similar
+			
+			* Usar la misma página para todo
+			
+			* Minipaint y TSPArt pueden usar el mismo canvas perfectamente y mismo sketch de p5.js
+			
+				- Implementar un método que oculte y muestre los botones necesarios:
+					Por ejemplo al pulsar en la opción del menú del TSPArt hay que ocultar los botones con id:
+						subir
+						limpiar
+						enviar
+						orientacion
+						inputImagen <--- este igual nos sirve para los dos propósitos
+						
+					Y mostrar los propios del TSPArt...
+				
+				- Añadir los controles del TSPArt, almenos serían:
+						Un slider para aplicar el filtro threshold
+						Un boton siguiente paso (tras finalizar el threshold)
+						Un botón de cancelar para restaurar la imagen original ?
+						Un boton enviar (podría ser el mismo que antes cambiando el texto del botón ... )
+						
+				- Añadir la lógica al sketch de p5.js
+						Aplicar el threshold con un map del slider
+						Borrar (Sólo cuando el estado de la imagen sea con filtro ya aplicado)
+						enviar (esto podía hacerse codificando la imagen y mandando el String, el problema es que a Processing no le puede llegar el String porque para descodificarlo a imagen es jodido)
+						
+						
+			
+		*/
+	  
+	     // controles
+		 var btnMostrarOcultar = document.getElementById('subir');
+		 var btnOrientacion = document.getElementById("orientacion");
+		 var btnLimpiar = document.getElementById("limpiar");
+		 var btnEnviar = document.getElementById("enviar");
+		 var inputImg = document.getElementById("inputImagen");
+			 
+		 btnMostrarOcultar.onclick = function(e){
+			mostrarOcultarImagen();
+			btnMostrarOcultar.innerHTML = mostrarImg ?  "ocultar" : "mostrar";
+			estadoControles();
+		};
+         btnLimpiar.onclick = function() {
+			limpiar();
+			estadoControles();
+		 }
+         btnOrientacion.onclick = function(){
+			girarOrientacion();
+			btnOrientacion.innerHTML = vertical ?  "horizontal" : "vertical";	
+			estadoControles();		
+		}
+		
+         btnEnviar.onclick = function(){
+			enviar();
+			inputImg.value = null;
+			btnMostrarOcultar.disabled = true;
+		}
+		 inputImg.onchange = function (e) {
+			cargaImagen(e.srcElement);
+			btnMostrarOcultar.disabled = false;
+			estadoControles();
+		};
+
+		btnMostrarOcultar.disabled = true;
+		estadoControles = function() {
+			btnLimpiar.disabled = curvas.length == 0;
+			btnEnviar.disabled = curvas.length == 0;
+		};
+		estadoControles();
+         
+      </script>
+   </body>
+</html>

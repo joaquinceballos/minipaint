@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>TSPArt</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+      <script src="funcionesCanvas.js"></script>
+	  <script src="tspart.js"></script>
+	  <link rel="stylesheet" type="text/css" href="estilo.css">
+      <!--pasar a un .css -->
+      <style>  
+		 body {
+		 padding: 0;
+		 margin: 0;
+		 } 
+         canvas {
+         padding-left: 0;
+         padding-right: 0;
+         margin-left: auto;
+         margin-right: auto;
+         display: block;
+         width: 800px;
+    border: 1px solid black;
+         }
+      </style>
+   </head>
+   <body>
+   <p>
+      <div id="div_canvas">
+      </div class="center-block">
+      <section>
+         <p/>
+         <div class="mx-auto text-center">
+			<!-- controles del minipaint -->
+            <button  id="enviar" class="btn btn-secondary btn-lg">Enviar</button>
+            <button  id="orientacion" class="btn btn-secondary btn-lg">horizontal</button>
+            <!-- para darle estilo habrá que meter más elementos ... más adelante -->
+			<div class="slidecontainer" id = "slider">
+                <p>Threshold</p>
+                <input type="range" min="1" max="100" value="50" class="slider" id = "sliderValue">
+            </div> 
+			<div class="slidecontainer" id = "sliderGoma">
+                <p>Tamaño Goma</p>
+                <input type="range" min="1" max="100" value="50" class="slider" id = "sliderGomaValue">
+            </div> 
+			<div class="slidecontainer">
+            <input type="file" class="center" id="inputImagen">
+			</div>
+      </section>
+      </div>
+      <script>
+	  
+		/*
+			TODO para meter la parte del TSPArt:
+			
+			* Añadir un menú con las opciones del paint, tspart y ya de paso un "Acerca de" o algo similar
+			
+			* Usar la misma página para todo
+			
+			* Minipaint y TSPArt pueden usar el mismo canvas perfectamente y mismo sketch de p5.js
+			
+				- Implementar un método que oculte y muestre los botones necesarios:
+					Por ejemplo al pulsar en la opción del menú del TSPArt hay que ocultar los botones con id:
+						subir
+						limpiar
+						enviar
+						orientacion
+						inputImagen <--- este igual nos sirve para los dos propósitos
+						
+					Y mostrar los propios del TSPArt...
+				
+				- Añadir los controles del TSPArt, almenos serían:
+						Un slider para aplicar el filtro threshold
+						Un boton siguiente paso (tras finalizar el threshold)
+						Un botón de cancelar para restaurar la imagen original ?
+						Un boton enviar (podría ser el mismo que antes cambiando el texto del botón ... )
+						
+				- Añadir la lógica al sketch de p5.js
+						Aplicar el threshold con un map del slider
+						Borrar (Sólo cuando el estado de la imagen sea con filtro ya aplicado)
+						enviar (esto podía hacerse codificando la imagen y mandando el String, el problema es que a Processing no le puede llegar el String porque para descodificarlo a imagen es jodido)
+						
+						
+			
+		*/
+	  
+	     // controles
+		 var btnOrientacion = document.getElementById("orientacion");
+		 var btnEnviar = document.getElementById("enviar");
+		 var inputImg = document.getElementById("inputImagen");
+		 var slider = document.getElementById("sliderValue");
+		 var sliderGoma = document.getElementById("sliderGomaValue");
+		 var avisadoPaso3 = false;
+		      
+		
+		$( "<div id='alertaID' class='slidecontainer alert alert-warning'>Carga una imagen</div>").insertAfter( "#div_canvas" );
+		$("#alertaID").delay(5000).fadeOut('slow');
+		 		 
+		 sliderGoma.oninput = function(){
+			grosorLinea = this.value;
+		 }
+		 
+		 slider.oninput = function() {
+		  aplicaThreshold(this.value);
+		}
+			 
+         btnOrientacion.onclick = function(){
+			girarOrientacion();
+			btnOrientacion.innerHTML = vertical ?  "horizontal" : "vertical";	
+			slider.value = "50";
+			thresholdAplicado = false;	
+			avisadoPaso3 = false;
+			estadoControles();			
+		}
+		
+         btnEnviar.onclick = function(){
+			enviar();
+			inputImg.value = null;
+		};
+		 inputImg.onchange = function (e) {
+			cargaImagen(e.srcElement);
+			slider.value = "50";
+			thresholdAplicado = false;	
+			avisadoPaso3 = false;
+			estadoControles();		
+			$( "<div id='imagenCargada' class='slidecontainer alert alert-info'>Aplica el filtro THRESHOLD a la imagen</div>").insertAfter( "#div_canvas" );
+			$("#imagenCargada").delay(5000).fadeOut('slow');
+		};
+
+		estadoControles = function() {
+		console.log(thresholdAplicado);
+			if(thresholdAplicado){
+			if(!avisadoPaso3){
+				avisadoPaso3 = true;			
+				$( "<div id='imagenCargada' class='slidecontainer alert alert-success'>Listo! puedes enviar la foto o retocarla con la goma de borrar</div>").insertAfter( "#div_canvas" );
+			$("#imagenCargada").delay(5000).fadeOut('slow');
+			}
+				sliderGoma.classList.remove("hidden");
+				btnEnviar.disabled = false;
+			} else {
+				sliderGoma.classList.add("hidden");
+				btnEnviar.disabled = true;
+			}
+		};
+		estadoControles();
+         
+      </script>
+   </body>
+</html>
