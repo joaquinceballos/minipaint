@@ -1,4 +1,4 @@
- body {
+body {
 	padding: 0;
 	margin: 0;
     background-color: #333;
@@ -38,11 +38,16 @@
 }
 
 .slidecontainer {
-  width: 25%; /* Width of the outside container */
+  width: 50%; /* Width of the outside container */
   margin-left: auto;
   margin-right: auto;
   margin-top: 10px;
   margin-bottom: 10px;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+.etiquetaslider{
+	color: white;
 }
 
 /* The slider itself */
@@ -82,7 +87,7 @@
 
 h1 {
   font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
-  font-size: 92px;
+  font-size: 8vw;
   text-align: center;
   text-transform: uppercase;
   text-rendering: optimizeLegibility;
@@ -112,7 +117,7 @@ color: #e0dfdc;
 }
 h2 {
   font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
-  font-size: 40px;
+  font-size: 4vw;
   text-align: center;
   text-transform: uppercase;
   text-rendering: optimizeLegibility;
@@ -143,7 +148,7 @@ color: #e0dfdc;
 
 h3 {
   font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
-  font-size: 15px;
+  font-size: 1.5vw;
   padding: 50px 50px;
   text-align: center;
   text-transform: uppercase;
@@ -167,7 +172,7 @@ nav a{
   font-weight:500;
   color: #e0dfdc;
   margin:30px 50px;
-  font-size:25px;
+  font-size:3vw;
   letter-spacing:1px;
   position:relative;
   display:inline-block;

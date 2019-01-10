@@ -15,28 +15,28 @@
    </head>
    <body>
    <p/>
-      <div id="div_canvas">
-      </div class="center-block">
-      <section>
-         <p/>
-         <div class="mx-auto text-center">
-			<!-- controles del minipaint -->
-            <button  id="enviar" class="btn btn-secondary btn-lg">Enviar</button>
-            <button  id="orientacion" class="btn btn-secondary btn-lg">horizontal</button>
-            <!-- para darle estilo habrá que meter más elementos ... más adelante -->
-			<div class="slidecontainer" id = "slider">
-                <p>Threshold</p>
-                <input type="range" min="1" max="100" value="50" class="slider" id = "sliderValue">
-            </div> 
-			<div class="slidecontainer" id = "sliderGoma">
-                <p>Tamaño Goma</p>
-                <input type="range" min="1" max="100" value="50" class="slider" id = "sliderGomaValue">
-            </div> 
-			<div class="slidecontainer">
-            <input type="file" class="center" id="inputImagen">
-			</div>
-      </section>
+<div id="div_canvas" class="float-left">
+</div class="float-left">
+<section>
+   <p/>
+   <div class="mx-auto text-center">
+      <!-- controles del minipaint -->
+      <button  id="enviar" class="btn btn-secondary btn-lg">Enviar</button>
+      <button  id="orientacion" class="btn btn-secondary btn-lg">horizontal</button>
+      <!-- para darle estilo habrá que meter más elementos ... más adelante -->
+      <div class="slidecontainer" id = "slider">
+         <p class="etiquetaslider">Threshold</p>
+         <input type="range" min="1" max="100" value="50" class="slider" id = "sliderValue">
       </div>
+      <div class="slidecontainer" id = "sliderGoma">
+         <p class="etiquetaslider">Tamaño Goma</p>
+         <input type="range" min="1" max="100" value="50" class="slider" id = "sliderGomaValue">
+      </div>
+      <div id="ultimodiv" class="slidecontainer">
+         <input type="file" class="center" id="inputImagen" accept="image/*">
+      </div>
+</section>
+</div>
       <script>	  
 	     // controles
 		 var btnOrientacion = document.getElementById("orientacion");
@@ -44,10 +44,12 @@
 		 var inputImg = document.getElementById("inputImagen");
 		 var slider = document.getElementById("sliderValue");
 		 var sliderGoma = document.getElementById("sliderGomaValue");
+		 var divSliderTreshold = document.getElementById("slider");
+		 var divSliderGoma = document.getElementById("sliderGoma");
 		 var avisadoPaso3 = false;
+		 var imagenCargada = false;
 		      
-		
-		$( "<div id='alertaID' class='slidecontainer alert alert-info'>Carga una imagen</div>").insertAfter( "#div_canvas" );
+		$( "<div id='alertaID' class='slidecontainer alert alert-info'>PASO1: Carga una imagen</div>").insertAfter( "#ultimodiv" );
 		$("#alertaID").delay(5000).fadeOut('slow');
 		 		 
 		 sliderGoma.oninput = function(){
@@ -70,30 +72,39 @@
          btnEnviar.onclick = function(){
 			enviar();
 			inputImg.value = null;
+			imagenCargada = false;
+			avisadoPaso3 = false;
+			thresholdAplicado = false;
+			estadoControles();
 		};
 		 inputImg.onchange = function (e) {
 			cargaImagen(e.srcElement);
 			slider.value = "50";
 			thresholdAplicado = false;	
 			avisadoPaso3 = false;
-			estadoControles();		
-			$( "<div id='imagenCargada' class='slidecontainer alert alert-info'>Aplica el filtro THRESHOLD a la imagen</div>").insertAfter( "#div_canvas" );
+			imagenCargada = true;
+			imagenCargada = true;
+			estadoControles();	
+			$( "<div id='imagenCargada' class='slidecontainer alert alert-info'>PASO 2: Aplica el filtro de valor a umbral deslizando la barra de 'threshold'</div>").insertAfter( "#ultimodiv" );
 			$("#imagenCargada").delay(5000).fadeOut('slow');
 		};
 
 		estadoControles = function() {
-		console.log(thresholdAplicado);
 			if(thresholdAplicado){
-			if(!avisadoPaso3){
-				avisadoPaso3 = true;			
-				$( "<div id='imagenCargada' class='slidecontainer alert alert-info'>Listo! puedes enviar la foto o retocarla con la goma de borrar</div>").insertAfter( "#div_canvas" );
-			$("#imagenCargada").delay(5000).fadeOut('slow');
-			}
-				sliderGoma.classList.remove("hidden");
+				if(!avisadoPaso3){
+					avisadoPaso3 = true;			
+					$( "<div id='imagenCargada' class='slidecontainer alert alert-info'>PASO 3: Listo! retoca la imagen con la goma de borrar si es necesario y pulsa 'enviar'</div>").insertAfter( "#ultimodiv" );
+					$("#imagenCargada").delay(5000).fadeOut('slow');
+				}
+				divSliderGoma.classList.remove("hidden");
 				btnEnviar.disabled = false;
 			} else {
-				sliderGoma.classList.add("hidden");
+				divSliderGoma.classList.add("hidden");
 				btnEnviar.disabled = true;
+			} if(!imagenCargada){
+				divSliderTreshold.classList.add("hidden");			
+			} else  {
+				divSliderTreshold.classList.remove("hidden");			
 			}
 		};
 		estadoControles();
